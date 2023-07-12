@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+    font-family: 'Ubuntu', 'VazirMatn', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 2;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+
+.log-form {
+    @apply bg-[#010409] w-full rounded-lg resize-none border border-zinc-900 p-2 outline-0 focus:ring-1 ring-indigo-600
+}
+
+.sign-up-inputs {
+    @apply w-full outline-0 bg-[#010409] border border-zinc-800 px-3 py-1.5 rounded focus:ring-1 ring-indigo-600
+}
+
+.errorlist li {
+@apply text-red-500 text-xs
+}
+
+.helptext {
+    @apply text-red-500 text-xs
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+html::-webkit-scrollbar,
+textarea::-webkit-scrollbar,
+.scroll-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+html,
+textarea,
+.scroll-hide {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
