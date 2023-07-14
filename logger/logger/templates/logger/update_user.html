@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Logger | Update User {% endblock %}
+
+
+{% block content %}
+
+<section class="max-w-md mx-auto mb-24 px-8 min-h-screen">
+
+    <div class="mt-10 shadow-[0_0_20px_theme('colors.indigo.600')] flex justify-center items-center flex-col p-4 rounded-xl">
+
+        <h1 class="text-xl mt-8 text-indigo-500">Update Your Profile</h1>
+
+
+        <form method="POST" enctype="multipart/form-data" class="flex flex-col items-center justify-center gap-4 mt-8">
+            {% csrf_token %}
+        
+            {{ info_form.as_p }}
+
+            {{ photo_form.as_p }}
+
+
+            <button type="submit" class="mt-16 bg-indigo-600 rounded-lg w-11/12 sm:w-1/2 py-1 transition hover:translate-y-1 hover:bg-indigo-700 ">
+                Update
+            </button>
+        </form>
+
+
+    </div>
+
+
+</section>
+
+{% endblock content %}

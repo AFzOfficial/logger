@@ -16,33 +16,86 @@
                 </div>
             </div>
 
-            <img src="{% static 'img/avatar.webp' %}" alt="photo" class="w-16 h-16 rounded-full">
+            {% if profile.photo %}
+
+            <img src="{{ profile.photo.url }}" alt="avatar" class="w-20 h-20 rounded-full">
+
+            {% else %}
+
+            <img src="{% static 'img/avatar.webp' %}" alt="avatar" class="w-20 h-20 rounded-full">
+
+            {% endif %}
 
         </div>
 
         {% if profile.bio %}
         <div class="mt-4">
-            <p class="text-sm">
+            <p dir="auto" class="text-sm">
                 {{ profile.bio }}
             </p>
         </div>
         {% endif %}
 
-        <div class="mt-8 flex justify-between items-center">
+        <div class="mt-8 flex justify-between items-center relative">
 
             <div class="flex items-center gap-2">
-                <span class="text-sm text-gray-400">{{ profile.followed_by.count }} followers </span>
-                <span class="text-sm text-gray-400">{{ profile.follows.count }} followings </span>
+                <a href="{% url 'followers' profile.user.username  %}" class="text-sm text-gray-400">
+                    <span>{{ profile.followed_by.count }} followers</span>
+                </a>
+                <a href="{% url 'followings' profile.user.username  %}" class="text-sm text-gray-400">
+                    <span>{{ profile.follows.count }} followings</span>
+                </a>
             </div>
 
-            <button class="hover:bg-zinc-900 rounded-lg transition p-1">
+            <button id="profile-dropdown-button" class="hover:bg-zinc-900 rounded-lg transition p-1">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-
             </button>
+
+
+
+            <div id="profile-dropdown" class="hidden absolute right-9 top-3 rounded-xl bg-[#111] w-44">
+                <ul class="py-2 px-2 text-sm">
+                    {% if request.user.is_authenticated and request.user.id == profile.user.id %}
+                    <li>
+                        <a href="{% url 'update_profile' %}">
+                            <button class="inline-flex w-full px-4 py-2 rounded-lg hover:bg-zinc-800">
+                                <span class="inline-flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                    </svg>
+
+
+                                    Edit
+                                </span>
+                            </button>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <button data-clipboard-text="{{ request.scheme }}://{{ request.get_host }}{% url 'profile' profile.user.username %}" id="shareProfile" class="inline-flex w-full px-4 py-2 rounded-lg hover:bg-zinc-800">
+                            <span class="inline-flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                                </svg>
+
+                                Share
+                            </span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+
+
+
         </div>
 
     </div>
@@ -54,13 +107,13 @@
             {% csrf_token %}
             {% if profile in user.profile.follows.all %}
             <button name="follow" value="unfollow" type="submit"
-                class="w-44 border border-gray-100 hover:text-black rounded-xl transition hover:bg-white">
-                Unfollow
+                class="w-1/2 text-sm py-1.5 bg-gray-100 text-black rounded-xl transition hover:bg-white">
+                unfollow
             </button>
             {% else %}
             <button name="follow" value="follow" type="submit"
-                class="w-44 bg-gray-100 text-black rounded-xl transition hover:bg-white">
-                Follow
+                class="w-1/2 text-sm py-1.5 border border-gray-100 hover:text-black rounded-xl transition hover:bg-white">
+                follow
             </button>
             {% endif %}
         </form>
@@ -83,8 +136,16 @@
 
             <div class="flex justify-between items-center mt-4 mb-4 -ml-9">
                 <div class="flex items-center">
+                    {% if log.user.profile.photo %}
+
+                    <img src="{{ log.user.profile.photo.url }}" alt="avatar" class="w-10 h-10 rounded-full">
+
+                    {% else %}
 
                     <img src="{% static 'img/avatar.webp' %}" alt="avatar" class="w-10 h-10 rounded-full">
+
+                    {% endif %}
+
                     <span class="ml-2 text-[15px] font-medium">{{ log.user.username }}</span>
                 </div>
 
@@ -95,19 +156,33 @@
                 {{ log.body }}
             </p>
 
+
             <div class="flex items-center gap-2 ml-1">
-                <button class="hover:bg-zinc-900 rounded-lg transition p-1">
-                    <!-- <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7">
+                
+                <a class="inline-flex" href="{% url 'like' log.id %}">
+
+                    <button class="hover:bg-zinc-900 rounded-lg transition p-1">
+                        {% if user in log.likes.all %}
+
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-6 h-6 text-red-600">
                             <path
                                 d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
-                        </svg> -->
+                        </svg>
 
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg>
-                </button>
+                        {% else %}
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                        </svg>
+
+                        {% endif %}
+                    </button>
+                </a>
+
+
 
 
                 <a class="inline-flex" href="{% url 'comments' log.id %}">
@@ -119,15 +194,60 @@
                         </svg>
                     </button>
                 </a>
-            </div>
 
-        </article>
+                <p class="text-[13px]"><span>0</span> replies - <span>{{ log.number_of_likes }}</span> likes </p>
+
+            </div>
+    </div>
+
+    </article>
     </div>
 
     {% endfor %}
     {% else %}
     <p class="mt-4 text-sm text-center">Nothing...</p>
     {% endif %}
+
+
+
+    <div class="flex justify-between items-center gap-4 mt-10 ">
+
+        <div class="flex items-center gap-4">
+
+            {% if logs.has_next %}
+            <a href="{% url 'profile' profile.user.username logs.next_page_number %}">
+                <button class="px-5 py-1.5 rounded-xl bg-indigo-600 transition group">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6 transition group-hover:-translate-x-3">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+                    </svg>
+                </button>
+            </a>
+            {% endif %}
+
+            {% if logs.has_previous %}
+            <a href="{% url 'profile' profile.user.username logs.previous_page_number %}">
+
+                <button class="px-5 py-1.5 rounded-xl bg-indigo-600 transition group">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6 transition group-hover:translate-x-3">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                    </svg>
+                </button>
+            </a>
+            {% endif %}
+        </div>
+
+        {% if logs %}
+        <span class="text-sm text-gray-400">
+            {{ logs.number }} of {{ logs.paginator.num_pages }}
+        </span>
+        {% endif %}
+
+    </div>
+
 
 </section>
 {% endblock content %}

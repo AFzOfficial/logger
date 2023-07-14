@@ -9,8 +9,7 @@ from django import forms
 
 
 from .models import Profile, Log
-from .forms import LogForm, SignUpForm
-
+from .forms import LogForm, SignUpForm, UpdateUserForm, ProfileForm
 
 
 def index(request, page: int = 1):
@@ -25,8 +24,8 @@ def index(request, page: int = 1):
             log.user = request.user
             log.save()
 
-            messages.success(request, 'Loged.')
-            redirect('home')
+            # messages.success(request, 'Loged.')
+            return redirect('home')
 
     paginator = Paginator(logs, 10)
 
@@ -39,23 +38,24 @@ def index(request, page: int = 1):
     }
 
     return render(request, 'logger/index.html', context)
+
+
     
-    # return render(request, 'logger/log.html')
-
-
-
 
 def log(request, log: int):
     return render(request, 'logger/log.html')
 
 
-
-
-def user_profile(request, username: str):
+def account_profile(request, username: str, page: int = 1):
     # if request.user.is_authenticated:
     user = get_object_or_404(User, username=username)
     logs = Log.objects.filter(user=user).order_by('-created_at', '-id',)
     # logs = get_list_or_404(Log, user=user)
+
+    paginator = Paginator(logs, 10)
+
+    if page > paginator.num_pages or page < 1:
+        raise Http404('This page could not be found!')
 
     if request.method == "POST":
         current_user_profile = request.user.profile
@@ -71,14 +71,12 @@ def user_profile(request, username: str):
 
         current_user_profile.save()
 
-    return render(request, 'logger/profile.html', {"profile": user.profile, "logs": logs})
+    return render(request, 'logger/profile.html', {"profile": user.profile, "logs": paginator.get_page(page)})
 
     # return redirect('home')
 
 
-
-
-def user_login(request):
+def login_user(request):
     if not request.user.is_authenticated:
 
         if request.method == "POST":
@@ -91,27 +89,23 @@ def user_login(request):
                 login(request, user)
                 messages.success(request, 'Logged In Successfully.')
                 return redirect('home')
-            
+
             else:
                 messages.success(request, 'There was an error logging in.')
                 return redirect('login')
-        
 
         return render(request, 'logger/auth/login.html')
-    
+
     return redirect('home')
 
 
-
-def user_logout(request):
+def logout_user(request):
     logout(request)
     messages.success(request, 'Logged out Successfully.')
     return redirect('home')
 
 
-
-
-def user_signup(request):
+def signup_user(request):
     form = SignUpForm()
 
     if request.method == "POST":
@@ -128,3 +122,50 @@ def user_signup(request):
             return redirect('home')
 
     return render(request, 'logger/auth/signup.html', {'form': form})
+
+
+def update_profile(request):
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        current_user_profile = Profile.objects.get(user__id=request.user.id)
+
+        info_form = UpdateUserForm(
+            request.POST or None, request.FILES or None, instance=current_user)
+        photo_form = ProfileForm(
+            request.POST or None, request.FILES or None, instance=current_user_profile)
+
+        if info_form.is_valid() and photo_form.is_valid():
+            info_form.save()
+            photo_form.save()
+            # login(request, current_user)
+            messages.success(request, 'Updated Successfully.')
+            return redirect('update_profile')
+
+        return render(request, 'logger/update_user.html', {'info_form': info_form, 'photo_form': photo_form})
+
+    return redirect('home')
+
+
+def log_like(request, id: int):
+    if request.user.is_authenticated:
+        log = get_object_or_404(Log, id=id)
+
+        if log.likes.filter(id=request.user.id):
+            log.likes.remove(request.user)
+        else:
+            log.likes.add(request.user)
+
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+
+def user_followers(request, username:str, page: int = 1):
+    user = get_object_or_404(User, username=username)
+
+    return render(request, 'logger/followers.html', {'profile': user.profile})
+
+
+def user_followings(request, username:str, page: int = 1):
+    user = get_object_or_404(User, username=username)
+
+    return render(request, 'logger/followings.html', {'profile': user.profile})

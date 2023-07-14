@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} {{ profile.user.username }} | Followers {% endblock %}
+
+
+{% block content %}
+<section class="max-w-lg mx-auto mb-24 px-8 min-h-screen">
+
+    <div class="mt-10">
+        <div class="flex justify-between items-center">
+
+            <div class="flex flex-col">
+                <h1 class="text-2xl font-medium">{{ profile.user.first_name }}</h1>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm">{{ profile.user.username }}</span>
+                    <span class=" bg-zinc-900 px-2 py-1 rounded-full text-gray-400 text-xs">logger.net</span>
+                </div>
+            </div>
+
+            {% if profile.photo %}
+
+            <img src="{{ profile.photo.url }}" alt="avatar" class="w-20 h-20 rounded-full">
+
+            {% else %}
+
+            <img src="{% static 'img/avatar.webp' %}" alt="avatar" class="w-20 h-20 rounded-full">
+
+            {% endif %}
+
+        </div>
+
+        {% if profile.bio %}
+        <div class="mt-4">
+            <p dir="auto" class="text-sm">
+                {{ profile.bio }}
+            </p>
+        </div>
+        {% endif %}
+
+        <div class="mt-8 flex justify-between items-center relative">
+
+            <div class="flex items-center gap-2">
+                <a href="{% url 'followers' profile.user.username  %}" class="text-sm text-gray-400">
+                    <span>{{ profile.followed_by.count }} followers</span>
+                </a>
+                <a href="{% url 'followings' profile.user.username  %}" class="text-sm text-gray-400">
+                    <span>{{ profile.follows.count }} followings</span>
+                </a>
+            </div>
+
+            <button id="profile-dropdown-button" class="hover:bg-zinc-900 rounded-lg transition p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </button>
+
+
+
+            <div id="profile-dropdown" class="hidden absolute right-9 top-3 rounded-xl bg-[#111] w-44">
+                <ul class="py-2 px-2 text-sm">
+                    {% if request.user.is_authenticated and request.user.id == profile.user.id %}
+                    <li>
+                        <a href="{% url 'update_profile' %}">
+                            <button class="inline-flex w-full px-4 py-2 rounded-lg hover:bg-zinc-800">
+                                <span class="inline-flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                                    </svg>
+
+
+                                    Edit
+                                </span>
+                            </button>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <button class="inline-flex w-full px-4 py-2 rounded-lg hover:bg-zinc-800">
+                            <span class="inline-flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                                </svg>
+
+                                Share
+                            </span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+
+
+
+        </div>
+
+    </div>
+
+    <!-- {% if request.user.is_authenticated and request.user.profile != profile %}
+    <div class="mt-3 mb-3">
+
+        <form method="POST">
+            {% csrf_token %}
+            {% if profile in user.profile.follows.all %}
+            <button name="follow" value="unfollow" type="submit"
+                class="w-1/2 text-sm py-1.5 bg-gray-100 text-black rounded-xl transition hover:bg-white">
+                unfollow
+            </button>
+            {% else %}
+            <button name="follow" value="follow" type="submit"
+                class="w-1/2 text-sm py-1.5 border border-gray-100 hover:text-black rounded-xl transition hover:bg-white">
+                follow
+            </button>
+            {% endif %}
+        </form>
+
+    </div>
+    {% endif %} -->
+
+
+    <div class="border-b border-zinc-900 text-center mt-4">
+        <span class="text-sm font-medium">Followers</span>
+    </div>
+
+    <div>
+
+        {% if profile.followed_by %}
+
+        {% for follower in profile.followed_by.all %}
+        <div class="border-b border-zinc-900 flex justify-between p-4 w-full h-16 items-center">
+            <a class="flex items-center" href="{% url 'profile' follower.user.username %}">
+
+                {% if follower.photo %}
+
+                <img src="{{ follower.photo.url }}" alt="avatar" class="w-10 h-10 rounded-full">
+
+                {% else %}
+
+                <img src="{% static 'img/avatar.webp' %}" alt="avatar" class="w-10 h-10 rounded-full">
+
+                {% endif %}
+
+                <span class="ml-2 text-[15px] font-medium">{{ follower.user.username }}</span>
+
+            </a>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+{% endblock content %}

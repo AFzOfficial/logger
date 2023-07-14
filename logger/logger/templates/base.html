@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'css/main.min.css' %}">
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
 
 </head>
 
@@ -22,7 +23,7 @@
 
         <div class="flex justify-center items-center px-2">
             <a href="{% url 'home' %}">
-                <h1 class="text-xl font-medium text-sky-500">
+                <h1 class="text-xl font-medium text-indigo-500">
                     Logger
                 </h1>
             </a>
@@ -33,10 +34,10 @@
             <ul class="flex space-x-4 text-white font-medium text-sm">
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'profile' request.user.username %}"
-                        class="hover:text-sky-500 transition">Profile</a></li>
-                <li><a href="{% url 'logout' %}" class="hover:text-sky-500 transition">Logout</a></li>
+                        class="hover:text-indigo-500 transition">Profile</a></li>
+                <li><a href="{% url 'logout' %}" class="hover:text-indigo-500 transition">Logout</a></li>
                 {% else %}
-                <li><a href="{% url 'login' %}" class="hover:text-sky-500 transition">Sign In</a></li>
+                <li><a href="{% url 'login' %}" class="hover:text-indigo-500 transition">Sign In</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -76,8 +77,8 @@
 
     {% if messages %}
 
-    <div class="fixed top-10 right-0 z-40 p-6">
-        <div id="toast" class="bg-zinc-800 rounded-lg text-sm px-4 py-1.5 opacity-0 transform ease-out duration-300"></div>
+    <div class="fixed inset-x-0 top-0 flex items-center justify-center z-40 p-6">
+        <div id="toast" class="bg-indigo-600 rounded-xl text-sm px-4 py-2 opacity-0 transform -translate-y-12 ease-out duration-300"></div>
     </div>
 
     {% for message in messages %}
@@ -86,10 +87,10 @@
 
         toast.innerText = '{{ message }}';
 
-        toast.classList.add('opacity-100', 'translate-y-6');
+        toast.classList.add('opacity-100', 'translate-y-12');
 
         setTimeout(() => {
-            toast.classList.remove('translate-y-6', 'opacity-100');
+            toast.classList.remove('translate-y-12', 'opacity-100');
         }, 5000);    
     </script>
     {% endfor %} {% endif %}
