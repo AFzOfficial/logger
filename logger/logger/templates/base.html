@@ -38,7 +38,7 @@
 
 
         {% if user.is_authenticated %}
-        <div class="flex justify-center items-center px-2">
+        <div class="flex justify-center items-center">
 
             <a href="{% url 'profile' request.user.username %}">
                 {% if request.user.profile.photo %}
