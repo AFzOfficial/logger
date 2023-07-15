@@ -3,6 +3,11 @@ $('#profile-dropdown-button').click(function () {
 });
 
 
+$('#menuButton').click(function () {
+  $('#menu').toggle(80, 'linear');
+});
+
+
 $(document).click(function (event) {
   var target = $(event.target);
   if (!target.closest('#profile-dropdown-button').length) {
@@ -10,14 +15,24 @@ $(document).click(function (event) {
   }
 });
 
+$(document).click(function (event) {
+  var target = $(event.target);
+  if (!target.closest('#menuButton').length) {
+    $('#menu').hide(80, 'linear');
+  }
+});
 
-$(document).ready(function() {
+
+
+
+
+$(document).ready(function () {
   var clipboard = new ClipboardJS("#shareProfile");
-  clipboard.on("success", function(e) {
+  clipboard.on("success", function (e) {
     console.info("URL copied to clipboard!");
     e.clearSelection();
   });
-  clipboard.on("error", function(e) {
+  clipboard.on("error", function (e) {
     console.info("Failed to copy URL to clipboard.");
   });
 });

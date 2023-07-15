@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% block title %} {{ profile.user.username }} ({{ profile.user.first_name }}) {% endblock %}
+
 {% block content %}
 <section class="max-w-lg mx-auto mb-24 px-8 min-h-screen">
 
@@ -136,7 +138,7 @@
 
         <article class="border-b min-h-[140px] flex flex-col justify-start p-4 border-zinc-900">
 
-            <div class="flex justify-between items-center mt-4 mb-4 -ml-9">
+            <div class="flex justify-between items-center mt-4 mb-4 -ml-7">
                 <div class="flex items-center">
                     {% if log.user.profile.photo %}
 
@@ -154,12 +156,12 @@
                 <time class="text-sm font-normal leading-none">{{ log.created_at }}</time>
             </div>
 
-            <p dir="auto" class="mb-4 ml-2 text-base font-normal">
+            <p dir="auto" class="mb-4 ml-2 text-sm font-normal">
                 {{ log.body }}
             </p>
 
 
-            <div class="flex items-center gap-2 ml-1">
+            <div class="flex items-center gap-2 ml-1 mt-7">
 
                 <a class="inline-flex" href="{% url 'like' log.id %}">
 
@@ -199,7 +201,7 @@
 
                 {% if log.user.id == request.user.id %}
                 <a class="inline-flex" href="{% url 'delete_log' log.id %}">
-                    <button class="hover:bg-zinc-900 rounded-lg transition p-1 text-red-500">
+                    <button class="hover:bg-zinc-900 rounded-lg transition p-1">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"
