@@ -40,8 +40,6 @@ def index(request, page: int = 1):
     return render(request, 'logger/index.html', context)
 
 
-    
-
 def log(request, log: int):
     return render(request, 'logger/log.html')
 
@@ -158,14 +156,51 @@ def log_like(request, id: int):
     return redirect(request.META.get('HTTP_REFERER'))
 
 
-
-def user_followers(request, username:str, page: int = 1):
+def user_followers(request, username: str, page: int = 1):
     user = get_object_or_404(User, username=username)
 
     return render(request, 'logger/followers.html', {'profile': user.profile})
 
 
-def user_followings(request, username:str, page: int = 1):
+def user_followings(request, username: str, page: int = 1):
     user = get_object_or_404(User, username=username)
 
     return render(request, 'logger/followings.html', {'profile': user.profile})
+
+
+def delete_log(request, id: int):
+    if request.user.is_authenticated:
+        log =  get_object_or_404(Log, id=id)
+
+        if request.user.id == log.user.id:
+            log.delete()
+
+            return redirect(request.META.get('HTTP_REFERER'))
+    
+    messages.success(request, 'Are You Kidding?')
+    return redirect('home')
+
+
+
+def edit_log(request, id: int):
+    if request.user.is_authenticated:
+
+        log  = get_object_or_404(Log, id=id)
+
+        if request.user.id == log.user.id:
+            form = LogForm(request.POST or None, instance=log)
+
+            if request.method == "POST":
+                if form.is_valid():
+                    log = form.save(commit=False)
+                    log.user = request.user
+                    log.save()
+
+                    messages.success(request, 'Updated.')
+                    return redirect('home')
+                
+            return render(request, 'logger/edit_log.html', {'form': form})
+
+    messages.success(request, 'Are You Kidding?')
+    return redirect('home')
+
