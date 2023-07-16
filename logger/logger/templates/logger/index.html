@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load static %}
+{% load humanize %}
 
 {% block title %} Logger {% endblock %}
 
@@ -59,7 +60,7 @@
 
                 </a>
 
-                <time class="text-sm font-normal leading-none">{{ log.created_at }}</time>
+                <time class="text-xs">{{ log.created_at|naturaltime }}</time>
             </div>
 
             <p dir="auto" class="mb-4 ml-2 text-sm font-normal">
@@ -94,7 +95,7 @@
 
 
 
-                <a class="inline-flex" href="{% url 'comments' log.id %}">
+                <a class="inline-flex" href="{% url 'log' log.id %}">
                     <button class="hover:bg-zinc-900 rounded-lg transition p-1">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5 transform scale-x-[-1]">
@@ -126,7 +127,7 @@
                 </a>
                 {% endif %}
 
-                <p class="text-[13px]"><span>0</span> replies - <span>{{ log.number_of_likes }}</span> likes </p>
+                <p class="text-[13px]"><span>0</span> replies - <span>{{ log.number_of_likes|intword }}</span> likes </p>
 
             </div>
         </article>

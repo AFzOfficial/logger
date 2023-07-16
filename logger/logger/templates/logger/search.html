@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Logger | Search {% endblock %}
+
+
+{% block content %}
+<section class="max-w-lg mx-auto mb-24 px-8 min-h-screen">
+
+    <div class="mt-8">
+        <form method="POST" class="flex items-center gap-4">
+            {% csrf_token %}
+
+            <input type="text" class="form-inputs" name="search" placeholder="Username">
+
+            <button type="submit" class="bg-indigo-600 rounded-full p-1.5 transition hover:bg-indigo-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+            </button>
+        </form>
+    </div>
+
+    <div class="border-b border-zinc-900 text-center mt-4">
+        <span class="text-sm font-medium">Resaults for: {{ search }}</span>
+    </div>
+
+    <div>
+
+        {% if resault %}
+
+        {% for usr in resault %}
+        <div class="border-b border-zinc-900 flex justify-between p-4 w-full h-16 items-center">
+            <a class="flex items-center" href="{% url 'profile' usr.username %}">
+
+                {% if usr.profile.photo %}
+
+                <img src="{{ usr.profile.photo.url }}" alt="avatar" class="w-10 h-10 rounded-full">
+
+                {% else %}
+
+                <img src="{% static 'img/avatar.webp' %}" alt="avatar" class="w-10 h-10 rounded-full">
+
+                {% endif %}
+
+                <span class="ml-2 text-[15px] font-medium">{{ usr.username }}</span>
+
+            </a>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+{% endblock content %}

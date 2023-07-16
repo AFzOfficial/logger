@@ -13,11 +13,17 @@ class Log(models.Model):
         )
 
     body = models.CharField(max_length=200)
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(User, related_name='log_like', blank=True)
+
+    replay = models.ForeignKey('self', related_name='replies', null=True, blank=True, on_delete=models.CASCADE)
+
 
     def number_of_likes(self):
         return self.likes.count()
+    
+    def get_all_replies(self):
+        return self.replies.all()
     
 
     def __str__(self):

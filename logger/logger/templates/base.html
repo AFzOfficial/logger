@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="icon" href="https://fav.farm/🍉" >
+    <link rel="icon" href="https://fav.farm/🍉">
 
 
     <title>{% block title %} {% endblock %}</title>
@@ -29,10 +29,13 @@
             <ul class="flex gap-4 text-white font-medium text-xs">
                 <li><a href="{% url 'home' %}" class="hover:text-indigo-500 transition">HOME</a></li>
                 {% if user.is_authenticated %}
+                <li><a href="{% url 'search_user' %}" class="hover:text-indigo-500 transition">SEARCH</a></li>
                 <li><a href="{% url 'logout' %}" class="hover:text-indigo-500 transition">LOGOUT</a></li>
                 {% else %}
                 <li><a href="{% url 'login' %}" class="hover:text-indigo-500 transition">LOGIN</a></li>
                 {% endif %}
+                <li><a href="{% url 'home' %}" class="hover:text-indigo-500 transition">ABOUT</a></li>
+
             </ul>
         </div>
 
@@ -55,32 +58,37 @@
         </div>
         {% endif %}
 
+
         <div class="sm:hidden">
             <div id="menuButton">
                 <button class="transition hover:bg-zinc-800 p-1 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25" />
-                      </svg>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
+                      </svg>                      
                 </button>
             </div>
 
             <div id="menu" style="display: none;"
                 class="mx-auto z-50 w-full px-2 py-2 sm:hidden bg-black/95 fixed top-14 right-0 left-0 shadow-lg">
                 <ul class="space-y-4 text-white font-medium text-xs">
-                    <li><a href="{% url 'home' %}" class="block rounded-xl px-2 py-3 hover:bg-indigo-600 transition">HOME</a></li>
+                    <li><a href="{% url 'home' %}"
+                            class="block rounded-xl px-2 py-3 hover:bg-indigo-600 transition">HOME</a></li>
 
                     {% if user.is_authenticated %}
-                    <li><a href="{% url 'logout' %}" class="block rounded-xl px-2 py-3 hover:bg-indigo-600 transition">LOGOUT</a></li>
+                    <li><a href="{% url 'search_user' %}"
+                            class="block rounded-xl px-2 py-3 hover:bg-indigo-600 transition">SEARCH</a></li>
+                    <li><a href="{% url 'logout' %}"
+                            class="block rounded-xl px-2 py-3 hover:bg-indigo-600 transition">LOGOUT</a></li>
                     {% else %}
-                    <li><a href="{% url 'login' %}" class="block rounded-xl px-2 py-3 hover:bg-indigo-600 transition">LOGIN</a></li>
+                    <li><a href="{% url 'login' %}"
+                            class="block rounded-xl px-2 py-3 hover:bg-indigo-600 transition">LOGIN</a></li>
                     {% endif %}
 
-                    <li><a href="{% url 'home' %}" class="block rounded-xl px-2 py-3 hover:bg-indigo-600 transition">ABOUT</a></li>
-                    <li><a href="{% url 'home' %}" class="block rounded-xl px-2 py-3 hover:bg-indigo-600 transition">CONTACT-US</a></li>
+                    <li><a href="{% url 'home' %}"
+                            class="block rounded-xl px-2 py-3 hover:bg-indigo-600 transition">ABOUT</a></li>
                 </ul>
             </div>
         </div>
-
 
     </nav>
 

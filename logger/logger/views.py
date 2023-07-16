@@ -40,7 +40,7 @@ def index(request, page: int = 1):
     return render(request, 'logger/index.html', context)
 
 
-def log(request, log: int):
+def log(request, id: int):
     return render(request, 'logger/log.html')
 
 
@@ -170,22 +170,21 @@ def user_followings(request, username: str, page: int = 1):
 
 def delete_log(request, id: int):
     if request.user.is_authenticated:
-        log =  get_object_or_404(Log, id=id)
+        log = get_object_or_404(Log, id=id)
 
         if request.user.id == log.user.id:
             log.delete()
 
             return redirect(request.META.get('HTTP_REFERER'))
-    
+
     messages.success(request, 'Are You Kidding?')
     return redirect('home')
-
 
 
 def edit_log(request, id: int):
     if request.user.is_authenticated:
 
-        log  = get_object_or_404(Log, id=id)
+        log = get_object_or_404(Log, id=id)
 
         if request.user.id == log.user.id:
             form = LogForm(request.POST or None, instance=log)
@@ -198,9 +197,22 @@ def edit_log(request, id: int):
 
                     messages.success(request, 'Updated.')
                     return redirect('home')
-                
+
             return render(request, 'logger/edit_log.html', {'form': form})
 
     messages.success(request, 'Are You Kidding?')
     return redirect('home')
 
+
+def search_user(request):
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            search = request.POST['search']
+
+            resault = User.objects.filter(username__contains=search)
+            return render(request, 'logger/search.html', {'search': search, 'resault': resault})
+
+        return render(request, 'logger/search.html')
+
+    messages.success(request, 'Are You Kidding?')
+    return redirect('home')

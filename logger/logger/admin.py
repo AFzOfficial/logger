@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.models import Group, User
 from .models import Profile, Log
 
+# Change Site Header 
+admin.site.site_header = "Logger"
+
 # Unregister Groups
 admin.site.unregister(Group)
 
