@@ -14,7 +14,7 @@ from .forms import LogForm, SignUpForm, UpdateUserForm, ProfileForm
 
 def index(request, page: int = 1):
     # if request.user.is_authenticated:
-    logs = Log.objects.all().order_by('-created_at', '-id',)  # [:5]
+    logs = Log.objects.filter(is_reply=False).order_by('-created_at', '-id',)  # [:5]
 
     form = LogForm(request.POST or None)
 
@@ -40,14 +40,38 @@ def index(request, page: int = 1):
     return render(request, 'logger/index.html', context)
 
 
-def log(request, id: int):
-    return render(request, 'logger/log.html')
+def log(request, id: int, page: int = 1):
+    if request.user.is_authenticated:
+        log = get_object_or_404(Log, id=id)
+        replies = log.replies.all().order_by('-created_at', '-id', )
+
+        paginator = Paginator(replies, 10)
+
+        if page > paginator.num_pages or page < 1:
+            raise Http404('This page could not be found!')
+
+        form = LogForm(request.POST or None)
+
+        if request.method == "POST":
+            if form.is_valid():
+                reply = form.save(commit=False)
+                reply.user = request.user
+                reply.is_reply = True
+                reply.save()
+
+                log.replies.add(reply)
+
+                return redirect(request.META.get('HTTP_REFERER'))
+
+        return render(request, 'logger/log.html', {'log': log, 'form': form, 'replies': paginator.get_page(page)})
+
+    return redirect('home')
 
 
 def account_profile(request, username: str, page: int = 1):
     # if request.user.is_authenticated:
     user = get_object_or_404(User, username=username)
-    logs = Log.objects.filter(user=user).order_by('-created_at', '-id',)
+    logs = Log.objects.filter(user=user, is_reply=False).order_by('-created_at', '-id',)
     # logs = get_list_or_404(Log, user=user)
 
     paginator = Paginator(logs, 10)
@@ -216,3 +240,7 @@ def search_user(request):
 
     messages.success(request, 'Are You Kidding?')
     return redirect('home')
+
+
+def about(request):
+    return render(request, 'logger/about.html')

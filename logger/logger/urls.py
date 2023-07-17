@@ -10,9 +10,11 @@ urlpatterns = [
     path('page/<int:page>', views.index, name='home'),
 
     path('user/search/', views.search_user, name='search_user'),
-#     path('log/search/', views.search_log, name='search_log'),
+    # path('log/search/', views.search_log, name='search_log'),
 
     path('log/<int:id>', views.log, name='log'),
+    path('log/<int:id>/page/<int:page>', views.log, name='log'),
+
     path('log/like/<int:id>', views.log_like, name='like'),
     path('log/delete/<int:id>', views.delete_log, name='delete_log'),
     path('log/edit/<int:id>', views.edit_log, name='edit_log'),
@@ -35,5 +37,6 @@ urlpatterns = [
 
     path('profile/update/', views.update_profile, name='update_profile'),
 
+    path('about/', views.about, name='about'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
