@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
+# from django.contrib.auth.forms import UserCreationForm
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.http import Http404
-from django import forms
+# from django import forms
 
 
 from .models import Profile, Log
@@ -181,15 +181,22 @@ def log_like(request, id: int):
 
 
 def user_followers(request, username: str, page: int = 1):
-    user = get_object_or_404(User, username=username)
+    if request.user.is_authenticated:
+        user = get_object_or_404(User, username=username)
 
-    return render(request, 'logger/followers.html', {'profile': user.profile})
+        return render(request, 'logger/followers.html', {'profile': user.profile})
+
+    redirect('home')
 
 
 def user_followings(request, username: str, page: int = 1):
-    user = get_object_or_404(User, username=username)
+    if request.user.is_authenticated:
+        user = get_object_or_404(User, username=username)
 
-    return render(request, 'logger/followings.html', {'profile': user.profile})
+        return render(request, 'logger/followings.html', {'profile': user.profile})
+    
+    redirect('home')
+
 
 
 def delete_log(request, id: int):
@@ -230,10 +237,12 @@ def edit_log(request, id: int):
 
 def search_user(request):
     if request.user.is_authenticated:
+
         if request.method == "POST":
             search = request.POST['search']
 
-            resault = User.objects.filter(username__contains=search)
+            resault = User.objects.filter(username__contains=search).order_by('id', )[:100]
+
             return render(request, 'logger/search.html', {'search': search, 'resault': resault})
 
         return render(request, 'logger/search.html')

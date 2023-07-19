@@ -10,6 +10,7 @@ urlpatterns = [
     path('page/<int:page>', views.index, name='home'),
 
     path('user/search/', views.search_user, name='search_user'),
+
     # path('log/search/', views.search_log, name='search_log'),
 
     path('log/<int:id>', views.log, name='log'),
