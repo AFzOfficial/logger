@@ -14,7 +14,7 @@ from .forms import LogForm, SignUpForm, UpdateUserForm, ProfileForm
 
 def index(request, page: int = 1):
     # if request.user.is_authenticated:
-    logs = Log.objects.filter(is_reply=False).order_by('-created_at', '-id',)  # [:5]
+    logs = Log.objects.filter(is_reply=False).order_by('-created_at', '-id',)
 
     form = LogForm(request.POST or None)
 
@@ -24,20 +24,11 @@ def index(request, page: int = 1):
             log.user = request.user
             log.save()
 
-            # messages.success(request, 'Loged.')
             return redirect('home')
 
     paginator = Paginator(logs, 10)
 
-    if page > paginator.num_pages or page < 1:
-        raise Http404('This page could not be found!')
-
-    context = {
-        "logs": paginator.get_page(page),
-        "form": form,
-    }
-
-    return render(request, 'logger/index.html', context)
+    return render(request, 'logger/index.html', {"logs": paginator.get_page(page), "form": form})
 
 
 def log(request, id: int, page: int = 1):
@@ -46,9 +37,6 @@ def log(request, id: int, page: int = 1):
         replies = log.replies.all().order_by('-created_at', '-id', )
 
         paginator = Paginator(replies, 10)
-
-        if page > paginator.num_pages or page < 1:
-            raise Http404('This page could not be found!')
 
         form = LogForm(request.POST or None)
 
@@ -71,13 +59,11 @@ def log(request, id: int, page: int = 1):
 def account_profile(request, username: str, page: int = 1):
     # if request.user.is_authenticated:
     user = get_object_or_404(User, username=username)
-    logs = Log.objects.filter(user=user, is_reply=False).order_by('-created_at', '-id',)
+    logs = Log.objects.filter(
+        user=user, is_reply=False).order_by('-created_at', '-id',)
     # logs = get_list_or_404(Log, user=user)
 
     paginator = Paginator(logs, 10)
-
-    if page > paginator.num_pages or page < 1:
-        raise Http404('This page could not be found!')
 
     if request.method == "POST":
         current_user_profile = request.user.profile
@@ -95,7 +81,7 @@ def account_profile(request, username: str, page: int = 1):
 
     return render(request, 'logger/profile.html', {"profile": user.profile, "logs": paginator.get_page(page)})
 
-    # return redirect('home')
+    # return redirect('login')
 
 
 def login_user(request):
@@ -130,18 +116,21 @@ def logout_user(request):
 def signup_user(request):
     form = SignUpForm()
 
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-            # first_name = form.cleaned_data('first_name')
+    if User.objects.all().count() >= 50:
+        if request.method == "POST":
+            form = SignUpForm(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password1']
 
-            user = authenticate(request, username=username, password=password)
-            login(request, user)
-            messages.success(request, 'Register Successfully.')
-            return redirect('home')
+                user = authenticate(request, username=username, password=password)
+                login(request, user)
+                messages.success(request, 'Registered Successfully.')
+                return redirect('home')
+            
+        messages.success(request, 'Sorry Registration has reached its maximum.')
+        return redirect('home')
 
     return render(request, 'logger/auth/signup.html', {'form': form})
 
@@ -153,17 +142,17 @@ def update_profile(request):
 
         info_form = UpdateUserForm(
             request.POST or None, request.FILES or None, instance=current_user)
-        photo_form = ProfileForm(
+        profile_form = ProfileForm(
             request.POST or None, request.FILES or None, instance=current_user_profile)
 
-        if info_form.is_valid() and photo_form.is_valid():
+        if info_form.is_valid() and profile_form.is_valid():
             info_form.save()
-            photo_form.save()
+            profile_form.save()
             # login(request, current_user)
             messages.success(request, 'Updated Successfully.')
             return redirect('update_profile')
 
-        return render(request, 'logger/update_user.html', {'info_form': info_form, 'photo_form': photo_form})
+        return render(request, 'logger/update_user.html', {'info_form': info_form, 'profile_form': profile_form})
 
     return redirect('home')
 
@@ -194,9 +183,8 @@ def user_followings(request, username: str, page: int = 1):
         user = get_object_or_404(User, username=username)
 
         return render(request, 'logger/followings.html', {'profile': user.profile})
-    
-    redirect('home')
 
+    redirect('home')
 
 
 def delete_log(request, id: int):
@@ -226,7 +214,7 @@ def edit_log(request, id: int):
                     log.user = request.user
                     log.save()
 
-                    messages.success(request, 'Updated.')
+                    messages.success(request, 'Updated Successfully.')
                     return redirect('home')
 
             return render(request, 'logger/edit_log.html', {'form': form})
@@ -241,15 +229,11 @@ def search_user(request):
         if request.method == "POST":
             search = request.POST['search']
 
-            resault = User.objects.filter(username__contains=search).order_by('id', )[:100]
+            resault = User.objects.filter(
+                username__contains=search).order_by('id', )[:100]
 
             return render(request, 'logger/search.html', {'search': search, 'resault': resault})
 
         return render(request, 'logger/search.html')
 
-    messages.success(request, 'Are You Kidding?')
-    return redirect('home')
-
-
-def about(request):
-    return render(request, 'logger/about.html')
+    return redirect('login')

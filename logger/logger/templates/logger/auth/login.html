@@ -17,7 +17,7 @@
             {% csrf_token %}
             <input type="text" placeholder="Username" class="w-full outline-0 bg-[#010409] border border-zinc-800 px-3 py-1.5 rounded focus:ring-1 ring-indigo-600" name="username">
             <input type="password" placeholder="Password" class="w-full outline-0 bg-[#010409] border border-zinc-800 px-3 py-1.5 rounded focus:ring-1 ring-indigo-600" name="password" >
-            <span class="text-sm">Dont have account? <a class="text-indigo-500 underline" href="{% url 'signup' %}">Sign up</a></span>
+            <span class="text-sm">Dont have an account? <a class="text-indigo-500 underline" href="{% url 'signup' %}">Sign up</a></span>
 
             <button type="submit" class="mt-16 bg-indigo-600 rounded-lg w-full sm:w-1/2 py-1 transition hover:translate-y-1 hover:bg-indigo-700 ">
                 Login
