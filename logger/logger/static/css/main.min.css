@@ -563,8 +563,16 @@ video {
   right: 0px;
 }
 
+.bottom-0{
+  bottom: 0px;
+}
+
 .left-0{
   left: 0px;
+}
+
+.left-1\/2{
+  left: 50%;
 }
 
 .right-0{
@@ -614,6 +622,10 @@ video {
 
 .-ml-9{
   margin-left: -2.25rem;
+}
+
+.mb-1{
+  margin-bottom: 0.25rem;
 }
 
 .mb-24{
@@ -672,10 +684,6 @@ video {
   margin-top: 2rem;
 }
 
-.ml-4{
-  margin-left: 1rem;
-}
-
 .block{
   display: block;
 }
@@ -686,6 +694,10 @@ video {
 
 .inline-flex{
   display: inline-flex;
+}
+
+.grid{
+  display: grid;
 }
 
 .hidden{
@@ -718,6 +730,14 @@ video {
 
 .h-7{
   height: 1.75rem;
+}
+
+.h-8{
+  height: 2rem;
+}
+
+.h-full{
+  height: 100%;
 }
 
 .min-h-\[140px\]{
@@ -760,6 +780,10 @@ video {
   width: 1.75rem;
 }
 
+.w-8{
+  width: 2rem;
+}
+
 .w-full{
   width: 100%;
 }
@@ -770,6 +794,11 @@ video {
 
 .max-w-md{
   max-width: 28rem;
+}
+
+.-translate-x-1\/2{
+  --tw-translate-x: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
 .-translate-y-14{
@@ -789,6 +818,10 @@ video {
 
 .transform{
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.grid-cols-3{
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .flex-col{
@@ -845,6 +878,11 @@ video {
   border-radius: 0.75rem;
 }
 
+.rounded-t-2xl{
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
 .border{
   border-width: 1px;
 }
@@ -882,6 +920,11 @@ video {
   background-color: rgb(17 17 17 / var(--tw-bg-opacity));
 }
 
+.bg-black{
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+
 .bg-black\/100{
   background-color: rgb(0 0 0 / 1);
 }
@@ -915,6 +958,10 @@ video {
 
 .p-2{
   padding: 0.5rem;
+}
+
+.p-3{
+  padding: 0.75rem;
 }
 
 .p-4{
@@ -972,10 +1019,6 @@ video {
 
 .text-center{
   text-align: center;
-}
-
-.text-justify{
-  text-align: justify;
 }
 
 .text-2xl{
@@ -1037,6 +1080,11 @@ video {
 .text-gray-400{
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity));
+}
+
+.text-gray-500{
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
 }
 
 .text-indigo-500{
@@ -1284,6 +1332,11 @@ textarea,
 .group:hover .group-hover\:translate-x-3{
   --tw-translate-x: 0.75rem;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.group:hover .group-hover\:text-blue-500{
+  --tw-text-opacity: 1;
+  color: rgb(59 130 246 / var(--tw-text-opacity));
 }
 
 .group:hover .group-hover\:opacity-75{

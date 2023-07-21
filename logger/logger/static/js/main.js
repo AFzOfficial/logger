@@ -3,9 +3,9 @@ $('#profile-dropdown-button').click(function () {
 });
 
 
-$('#menuButton').click(function () {
-  $('#menu').toggle(80, 'linear');
-});
+// $('#menuButton').click(function () {
+//   $('#menu').slideToggle(80);
+// });
 
 
 $(document).click(function (event) {
@@ -15,15 +15,12 @@ $(document).click(function (event) {
   }
 });
 
-$(document).click(function (event) {
-  var target = $(event.target);
-  if (!target.closest('#menuButton').length) {
-    $('#menu').hide(80, 'linear');
-  }
-});
-
-
-
+// $(document).click(function (event) {
+//   var target = $(event.target);
+//   if (!target.closest('#menuButton').length) {
+//     $('#menu').slideUp(80);
+//   }
+// });
 
 
 $(document).ready(function () {
