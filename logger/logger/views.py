@@ -116,7 +116,7 @@ def logout_user(request):
 def signup_user(request):
     form = SignUpForm()
 
-    if User.objects.all().count() >= 50:
+    if User.objects.all().count() <= 50:
         if request.method == "POST":
             form = SignUpForm(request.POST)
             if form.is_valid():
@@ -128,7 +128,7 @@ def signup_user(request):
                 login(request, user)
                 messages.success(request, 'Registered Successfully.')
                 return redirect('home')
-            
+    else:    
         messages.success(request, 'Sorry Registration has reached its maximum.')
         return redirect('home')
 
