@@ -16,7 +16,7 @@ class LogForm(forms.ModelForm):
         label=""
     )
 
-    class Meta():
+    class Meta:
         model = Log
         exclude = ("user", "likes", 'replies', 'is_reply')
 
