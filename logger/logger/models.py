@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -32,6 +33,7 @@ class Log(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.CharField(max_length=70, null=True, blank=True)
+    premium = models.DateTimeField(default=timezone.now)
 
     follows = models.ManyToManyField(
         'self',
@@ -42,7 +44,15 @@ class Profile(models.Model):
 
     photo = models.ImageField(null=True, blank=True, upload_to='images/')
 
-    def __str__(self):
+
+    def is_premium(self) -> bool:
+        if self.premium > timezone.now():
+            return True
+        
+        return False
+
+
+    def __str__(self) -> str:
         return self.user.username
 
 
