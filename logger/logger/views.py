@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 # from django.contrib.auth.forms import UserCreationForm
@@ -31,29 +32,27 @@ def index(request, page: int = 1):
     return render(request, 'logger/index.html', {"logs": paginator.get_page(page), "form": form})
 
 
+@login_required
 def log(request, id: int, page: int = 1):
-    if request.user.is_authenticated:
-        log = get_object_or_404(Log, id=id)
-        replies = log.replies.all().order_by('-created_at', '-id', )
+    log = get_object_or_404(Log, id=id)
+    replies = log.replies.all().order_by('-created_at', '-id', )
 
-        paginator = Paginator(replies, 10)
+    paginator = Paginator(replies, 10)
 
-        form = LogForm(request.POST or None)
+    form = LogForm(request.POST or None)
 
-        if request.method == "POST":
-            if form.is_valid():
-                reply = form.save(commit=False)
-                reply.user = request.user
-                reply.is_reply = True
-                reply.save()
+    if request.method == "POST":
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.user = request.user
+            reply.is_reply = True
+            reply.save()
 
-                log.replies.add(reply)
+            log.replies.add(reply)
 
-                return redirect(request.META.get('HTTP_REFERER'))
+            return redirect(request.META.get('HTTP_REFERER'))
 
-        return render(request, 'logger/log.html', {'log': log, 'form': form, 'replies': paginator.get_page(page)})
-
-    return redirect('home')
+    return render(request, 'logger/log.html', {'log': log, 'form': form, 'replies': paginator.get_page(page)})
 
 
 def account_profile(request, username: str, page: int = 1):
@@ -107,6 +106,7 @@ def login_user(request):
     return redirect('home')
 
 
+@login_required
 def logout_user(request):
     logout(request)
     messages.success(request, 'Logged out Successfully.')
@@ -124,116 +124,105 @@ def signup_user(request):
                 username = form.cleaned_data['username']
                 password = form.cleaned_data['password1']
 
-                user = authenticate(request, username=username, password=password)
+                user = authenticate(
+                    request, username=username, password=password)
                 login(request, user)
                 messages.success(request, 'Registered Successfully.')
                 return redirect('home')
-    else:    
-        messages.success(request, 'Sorry Registration has reached its maximum.')
+    else:
+        messages.success(
+            request, 'Sorry Registration has reached its maximum.')
         return redirect('home')
 
     return render(request, 'logger/auth/signup.html', {'form': form})
 
 
+@login_required
 def update_profile(request):
-    if request.user.is_authenticated:
-        current_user = User.objects.get(id=request.user.id)
-        current_user_profile = Profile.objects.get(user__id=request.user.id)
+    current_user = User.objects.get(id=request.user.id)
+    current_user_profile = Profile.objects.get(user__id=request.user.id)
 
-        info_form = UpdateUserForm(
-            request.POST or None, request.FILES or None, instance=current_user)
-        profile_form = ProfileForm(
-            request.POST or None, request.FILES or None, instance=current_user_profile)
+    info_form = UpdateUserForm(
+        request.POST or None, request.FILES or None, instance=current_user)
+    profile_form = ProfileForm(
+        request.POST or None, request.FILES or None, instance=current_user_profile)
 
-        if info_form.is_valid() and profile_form.is_valid():
-            info_form.save()
-            profile_form.save()
-            # login(request, current_user)
-            messages.success(request, 'Updated Successfully.')
-            return redirect('update_profile')
+    if info_form.is_valid() and profile_form.is_valid():
+        info_form.save()
+        profile_form.save()
+        # login(request, current_user)
+        messages.success(request, 'Updated Successfully.')
+        return redirect('update_profile')
 
-        return render(request, 'logger/update_user.html', {'info_form': info_form, 'profile_form': profile_form})
-
-    return redirect('home')
+    return render(request, 'logger/update_user.html', {'info_form': info_form, 'profile_form': profile_form})
 
 
+@login_required
 def log_like(request, id: int):
-    if request.user.is_authenticated:
-        log = get_object_or_404(Log, id=id)
+    log = get_object_or_404(Log, id=id)
 
-        if log.likes.filter(id=request.user.id):
-            log.likes.remove(request.user)
-        else:
-            log.likes.add(request.user)
+    if log.likes.filter(id=request.user.id):
+        log.likes.remove(request.user)
+    else:
+        log.likes.add(request.user)
 
     return redirect(request.META.get('HTTP_REFERER'))
 
 
+@login_required
 def user_followers(request, username: str, page: int = 1):
-    if request.user.is_authenticated:
-        user = get_object_or_404(User, username=username)
-
-        return render(request, 'logger/followers.html', {'profile': user.profile})
-
-    redirect('home')
+    user = get_object_or_404(User, username=username)
+    return render(request, 'logger/followers.html', {'profile': user.profile})
 
 
+@login_required
 def user_followings(request, username: str, page: int = 1):
-    if request.user.is_authenticated:
-        user = get_object_or_404(User, username=username)
-
-        return render(request, 'logger/followings.html', {'profile': user.profile})
-
-    redirect('home')
+    user = get_object_or_404(User, username=username)
+    return render(request, 'logger/followings.html', {'profile': user.profile})
 
 
+@login_required
 def delete_log(request, id: int):
-    if request.user.is_authenticated:
-        log = get_object_or_404(Log, id=id)
+    log = get_object_or_404(Log, id=id)
 
-        if request.user.id == log.user.id:
-            log.delete()
+    if request.user.id == log.user.id:
+        log.delete()
 
-            return redirect(request.META.get('HTTP_REFERER'))
+        return redirect(request.META.get('HTTP_REFERER'))
 
-    messages.success(request, 'Are You Kidding?')
-    return redirect('home')
+    messages.success(request, 'Error when deleting log!')
 
 
+@login_required
 def edit_log(request, id: int):
-    if request.user.is_authenticated:
+    log = get_object_or_404(Log, id=id)
 
-        log = get_object_or_404(Log, id=id)
-
-        if request.user.id == log.user.id:
-            form = LogForm(request.POST or None, instance=log)
-
-            if request.method == "POST":
-                if form.is_valid():
-                    log = form.save(commit=False)
-                    log.user = request.user
-                    log.save()
-
-                    messages.success(request, 'Updated Successfully.')
-                    return redirect('home')
-
-            return render(request, 'logger/edit_log.html', {'form': form})
-
-    messages.success(request, 'Are You Kidding?')
-    return redirect('home')
-
-
-def search_user(request):
-    if request.user.is_authenticated:
+    if request.user.id == log.user.id:
+        form = LogForm(request.POST or None, instance=log)
 
         if request.method == "POST":
-            search = request.POST['search']
+            if form.is_valid():
+                log = form.save(commit=False)
+                log.user = request.user
+                log.save()
 
-            resault = User.objects.filter(
-                username__contains=search).order_by('id', )[:100]
+                messages.success(request, 'Updated Successfully.')
+                return redirect('home')
 
-            return render(request, 'logger/search.html', {'search': search, 'resault': resault})
+        return render(request, 'logger/edit_log.html', {'form': form})
 
-        return render(request, 'logger/search.html')
+    messages.success(request, 'Error when updating log!')
 
-    return redirect('login')
+
+@login_required
+def search_user(request):
+
+    if request.method == "POST":
+        search = request.POST['search']
+
+        resault = User.objects.filter(
+            username__contains=search).order_by('id', )[:100]
+
+        return render(request, 'logger/search.html', {'search': search, 'resault': resault})
+
+    return render(request, 'logger/search.html')
