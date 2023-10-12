@@ -65,17 +65,18 @@ def account_profile(request, username: str, page: int = 1):
 
     paginator = Paginator(logs, 10)
 
-    if request.method == "POST":
+    if request.method == "POST" and request.user.is_authenticated:
         current_user_profile = request.user.profile
 
         action = request.POST['follow']
 
-        if action == 'unfollow':
-            current_user_profile.follows.remove(user.profile)
-        elif action == 'follow':
-            current_user_profile.follows.add(user.profile)
-        else:
-            return redirect('home')
+        match action:
+            case 'unfollow':
+                current_user_profile.follows.remove(user.profile)
+            case 'follow':
+                current_user_profile.follows.add(user.profile)
+            case _:
+                return redirect('home')
 
         current_user_profile.save()
 
