@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth.decorators import login_required
+from .decorators import guest_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 # from django.contrib.auth.forms import UserCreationForm
@@ -82,28 +83,24 @@ def account_profile(request, username: str, page: int = 1):
 
     # return redirect('login')
 
-
+@guest_required
 def login_user(request):
-    if not request.user.is_authenticated:
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
 
-        if request.method == "POST":
-            username = request.POST['username']
-            password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
 
-            user = authenticate(request, username=username, password=password)
+        if user != None:
+            login(request, user)
+            messages.success(request, 'Logged In Successfully.')
+            return redirect('home')
 
-            if user != None:
-                login(request, user)
-                messages.success(request, 'Logged In Successfully.')
-                return redirect('home')
+        else:
+            messages.success(request, 'There was an error logging in.')
+            return redirect('login')
 
-            else:
-                messages.success(request, 'There was an error logging in.')
-                return redirect('login')
-
-        return render(request, 'logger/auth/login.html')
-
-    return redirect('home')
+    return render(request, 'logger/auth/login.html')
 
 
 @login_required
@@ -113,6 +110,7 @@ def logout_user(request):
     return redirect('home')
 
 
+@guest_required
 def signup_user(request):
     form = SignUpForm()
 

@@ -10,7 +10,6 @@ urlpatterns = [
     path('page/<int:page>', views.index, name='home'),
 
     path('user/search/', views.search_user, name='search_user'),
-
     # path('log/search/', views.search_log, name='search_log'),
 
     path('log/<int:id>', views.log, name='log'),
@@ -36,6 +35,6 @@ urlpatterns = [
     path('auth/logout/', views.logout_user, name='logout'),
     path('auth/signup/', views.signup_user, name='signup'),
 
-    path('profile/update/', views.update_profile, name='update_profile'),
+    path('accounts/profile/update/', views.update_profile, name='update_profile'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
