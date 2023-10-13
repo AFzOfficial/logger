@@ -30,7 +30,7 @@ class ProfileForm(forms.ModelForm):
                               }
                           ))
 
-    photo = forms.ImageField(label='', help_text='',
+    photo = forms.ImageField(label='', help_text='', required=False,
                              widget=forms.widgets.FileInput(
                                  attrs={
                                      'class': 'file-input',
