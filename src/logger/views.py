@@ -152,9 +152,6 @@ def update_profile(request):
             profile_form.save()
             # login(request, current_user)
             messages.success(request, 'Updated Successfully.')
-        else:
-            print(profile_form.errors)
-            print(info_form.errors)
     return render(request, 'logger/update_user.html', {'info_form': info_form, 'profile_form': profile_form})
 
 
