@@ -84,6 +84,7 @@ def account_profile(request, username: str, page: int = 1):
 
     # return redirect('login')
 
+
 @guest_required
 def login_user(request):
     if request.method == "POST":
@@ -139,20 +140,21 @@ def signup_user(request):
 @login_required
 def update_profile(request):
     current_user = User.objects.get(id=request.user.id)
-    current_user_profile = Profile.objects.get(user__id=request.user.id)
 
     info_form = UpdateUserForm(
         request.POST or None, request.FILES or None, instance=current_user)
     profile_form = ProfileForm(
-        request.POST or None, request.FILES or None, instance=current_user_profile)
+        request.POST or None, request.FILES or None, instance=current_user.profile)
 
-    if info_form.is_valid() and profile_form.is_valid():
-        info_form.save()
-        profile_form.save()
-        # login(request, current_user)
-        messages.success(request, 'Updated Successfully.')
-        return redirect('update_profile')
-
+    if request.method == "POST":
+        if info_form.is_valid() and profile_form.is_valid():
+            info_form.save()
+            profile_form.save()
+            # login(request, current_user)
+            messages.success(request, 'Updated Successfully.')
+        else:
+            print(profile_form.errors)
+            print(info_form.errors)
     return render(request, 'logger/update_user.html', {'info_form': info_form, 'profile_form': profile_form})
 
 
