@@ -28,10 +28,12 @@ pip install -r requirements.txt
 ```bash
 python3 manage.py runserver
 ```
-Open [127.0.0.1:8000](http://127.0.0.1:8000) in your browser
 
-## Easy Run With Docker
+## Run With Docker
 
+### Run Development Docker Compose
 ```bash
-docker compose up
+docker compose -f docker-compose-dev.yml up -d
 ```
+
+Open [127.0.0.1:8000](http://127.0.0.1:8000) in your browser
