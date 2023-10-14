@@ -33,7 +33,7 @@ python3 manage.py runserver
 
 ### Run Development Docker Compose
 ```bash
-docker compose -f docker-compose-dev.yml up -d
+docker compose -f docker-compose.dev.yml up -d
 ```
 
 Open [127.0.0.1:8000](http://127.0.0.1:8000) in your browser
