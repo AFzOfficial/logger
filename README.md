@@ -4,7 +4,7 @@ Logger is a clone of Twitter. Users can post text, follow each other, like posts
 and other cool features such as premium users and etc.
 
 ### Technologies
-![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue) ![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green)
+![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue) ![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white) 
 ![HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white) ![jQuery](https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white)  
 
 ## How to Run?
@@ -24,6 +24,10 @@ source .venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+### Run Development Docker Compose
+```bash
+docker compose -f docker-compose.dev.yml up -d
+```
 ### Run Development Server
 ```bash
 python3 manage.py runserver
@@ -31,9 +35,8 @@ python3 manage.py runserver
 
 ## Run With Docker
 
-### Run Development Docker Compose
 ```bash
-docker compose -f docker-compose.dev.yml up -d
+docker compose up -d
 ```
 
 Open [127.0.0.1:8000](http://127.0.0.1:8000) in your browser
