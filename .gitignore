@@ -4,4 +4,4 @@ media/
 .venv
 node_moduels
 .vscode
-
+.env
