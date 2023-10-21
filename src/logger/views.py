@@ -183,22 +183,22 @@ def delete_log(request, id: int):
 @login_required
 def edit_log(request, id: int):
     log = get_object_or_404(Log, id=id)
+    form = LogForm(request.POST or None, instance=log)
 
-    if request.user.id == log.user.id:
-        form = LogForm(request.POST or None, instance=log)
+    if request.user.id != log.user.id:
+        messages.success(request, 'Error when updating log!')
+        return redirect('home')
 
-        if request.method == "POST":
-            if form.is_valid():
-                log = form.save(commit=False)
-                log.user = request.user
-                log.save()
+    if request.method == "POST" and form.is_valid():
+        log = form.save(commit=False)
+        log.user = request.user
+        log.save()
 
-                messages.success(request, 'Updated Successfully.')
-                return redirect('home')
+        messages.success(request, 'Updated Successfully.')
+        return redirect('home')
 
-        return render(request, 'logger/edit_log.html', {'form': form})
+    return render(request, 'logger/edit_log.html', {'form': form})
 
-    messages.success(request, 'Error when updating log!')
 
 
 @login_required
