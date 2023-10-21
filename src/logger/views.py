@@ -15,18 +15,16 @@ from .forms import LogForm, SignUpForm, UpdateUserForm, ProfileForm
 
 
 def index(request, page: int = 1):
-    # if request.user.is_authenticated:
     logs = Log.objects.filter(is_reply=False).order_by('-created_at', '-id',)
 
     form = LogForm(request.POST or None)
 
-    if request.method == "POST":
-        if form.is_valid():
-            log = form.save(commit=False)
-            log.user = request.user
-            log.save()
+    if request.method == "POST" and form.is_valid():
+        log = form.save(commit=False)
+        log.user = request.user
+        log.save()
 
-            return redirect('home')
+        return redirect('home')
 
     paginator = Paginator(logs, 10)
 
@@ -42,26 +40,23 @@ def log(request, id: int, page: int = 1):
 
     form = LogForm(request.POST or None)
 
-    if request.method == "POST":
-        if form.is_valid():
-            reply = form.save(commit=False)
-            reply.user = request.user
-            reply.is_reply = True
-            reply.save()
+    if request.method == "POST" and form.is_valid():
+        reply = form.save(commit=False)
+        reply.user = request.user
+        reply.is_reply = True
+        reply.save()
 
-            log.replies.add(reply)
+        log.replies.add(reply)
 
-            return redirect(request.META.get('HTTP_REFERER'))
+        return redirect(request.META.get('HTTP_REFERER'))
 
     return render(request, 'logger/log.html', {'log': log, 'form': form, 'replies': paginator.get_page(page)})
 
 
 def account_profile(request, username: str, page: int = 1):
-    # if request.user.is_authenticated:
     user = get_object_or_404(User, username=username)
     logs = Log.objects.filter(
         user=user, is_reply=False).order_by('-created_at', '-id',)
-    # logs = get_list_or_404(Log, user=user)
 
     paginator = Paginator(logs, 10)
 
