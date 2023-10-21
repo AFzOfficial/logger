@@ -77,8 +77,6 @@ def account_profile(request, username: str, page: int = 1):
 
     return render(request, 'logger/profile.html', {"profile": user.profile, "logs": paginator.get_page(page)})
 
-    # return redirect('login')
-
 
 @guest_required
 def login_user(request):
@@ -93,9 +91,8 @@ def login_user(request):
             messages.success(request, 'Logged In Successfully.')
             return redirect('home')
 
-        else:
-            messages.success(request, 'There was an error logging in.')
-            return redirect('login')
+        messages.success(request, 'There was an error logging in.')
+        return redirect('login')
 
     return render(request, 'logger/auth/login.html')
 
@@ -109,26 +106,23 @@ def logout_user(request):
 
 @guest_required
 def signup_user(request):
-    form = SignUpForm()
+    form = SignUpForm(request.POST or None)
 
-    if User.objects.all().count() <= 50:
-        if request.method == "POST":
-            form = SignUpForm(request.POST)
-            if form.is_valid():
-                form.save()
-                username = form.cleaned_data['username']
-                password = form.cleaned_data['password1']
-
-                user = authenticate(
-                    request, username=username, password=password)
-                login(request, user)
-                messages.success(request, 'Registered Successfully.')
-                return redirect('home')
-    else:
-        messages.success(
-            request, 'Sorry Registration has reached its maximum.')
+    if User.objects.all().count() > 99:
+        messages.success(request, 'Sorry Registration has reached its maximum.')
         return redirect('home')
+    
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password1']
 
+        user = authenticate(
+            request, username=username, password=password)
+        login(request, user)
+        messages.success(request, 'Registered Successfully.')
+        return redirect('home')
+        
     return render(request, 'logger/auth/signup.html', {'form': form})
 
 
