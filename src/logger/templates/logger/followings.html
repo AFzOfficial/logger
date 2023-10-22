@@ -25,7 +25,7 @@
 
             {% else %}
 
-            <img src="{% static 'img/avatar.webp' %}" alt="avatar" class="w-20 h-20 rounded-full">
+            <img src="{% static 'img/avatar.svg' %}" alt="avatar" class="w-20 h-20 rounded-full p-1 bg-indigo-600">
 
             {% endif %}
 
@@ -96,34 +96,9 @@
                 </ul>
             </div>
 
-
-
-
         </div>
 
     </div>
-
-    <!-- {% if request.user.is_authenticated and request.user.profile != profile %}
-    <div class="mt-3 mb-3">
-
-        <form method="POST">
-            {% csrf_token %}
-            {% if profile in user.profile.follows.all %}
-            <button name="follow" value="unfollow" type="submit"
-                class="w-1/2 text-sm py-1.5 bg-gray-100 text-black rounded-xl transition hover:bg-white">
-                unfollow
-            </button>
-            {% else %}
-            <button name="follow" value="follow" type="submit"
-                class="w-1/2 text-sm py-1.5 border border-gray-100 hover:text-black rounded-xl transition hover:bg-white">
-                follow
-            </button>
-            {% endif %}
-        </form>
-
-    </div>
-    {% endif %} -->
-
 
     <div class="border-b border-zinc-900 text-center mt-4">
         <span class="text-sm font-medium">Followings</span>
