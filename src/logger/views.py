@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator
 from django.contrib import messages
 
-from .models import Log
+from .models import Log, Profile
 from .decorators import guest_required
 from .forms import LogForm, SignUpForm, UpdateUserForm, ProfileForm
 
@@ -155,13 +155,17 @@ def log_like(request, id: int):
 @login_required
 def user_followers(request, username: str, page: int = 1):
     user = get_object_or_404(User, username=username)
-    return render(request, 'logger/followers.html', {'profile': user.profile})
+    followers = user.profile.followed_by.all()
+    paginator = Paginator(followers, 100)
+    return render(request, 'logger/followers.html', {'profile': user.profile, 'followers': paginator.get_page(page)})
 
 
 @login_required
 def user_followings(request, username: str, page: int = 1):
     user = get_object_or_404(User, username=username)
-    return render(request, 'logger/followings.html', {'profile': user.profile})
+    followings = user.profile.follows.all()
+    paginator = Paginator(followings, 100)
+    return render(request, 'logger/followings.html', {'profile': user.profile, 'followings': paginator.get_page(page)})
 
 
 @login_required
@@ -209,3 +213,5 @@ def search_user(request):
         return render(request, 'logger/search.html', {'search': search, 'resault': resault})
 
     return render(request, 'logger/search.html')
+
+

@@ -108,7 +108,7 @@
 
         {% if profile.followed_by %}
 
-        {% for follower in profile.followed_by.all %}
+        {% for follower in followers %}
         <div class="border-b border-zinc-900 flex justify-between p-4 w-full h-16 items-center">
             <a class="flex items-center" href="{% url 'profile' follower.user.username %}">
 
@@ -127,6 +127,43 @@
             </a>
         </div>
         {% endfor %}
+        {% endif %}
+
+    </div>
+
+    <div class="flex justify-between items-center gap-4 mt-10 ">
+
+        <div class="flex items-center gap-4">
+            {% if followers.has_next %}
+            <a href="{% url 'followers' profile.user.username followers.next_page_number %}">
+                <button class="px-5 py-1.5 rounded-xl bg-indigo-600 transition group">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6 transition group-hover:-translate-x-3">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+                    </svg>
+                </button>
+            </a>
+            {% endif %}
+
+            {% if followers.has_previous %}
+            <a href="{% url 'followers' profile.user.username followers.previous_page_number %}">
+
+                <button class="px-5 py-1.5 rounded-xl bg-indigo-600 transition group">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6 transition group-hover:translate-x-3">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                    </svg>
+                </button>
+            </a>
+            {% endif %}
+        </div>
+
+        {% if followers %}
+        <span class="text-sm text-gray-400">
+            {{ followers.number }} of {{ followers.paginator.num_pages }}
+        </span>
         {% endif %}
 
     </div>
