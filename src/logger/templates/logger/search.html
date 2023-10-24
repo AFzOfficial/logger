@@ -9,10 +9,10 @@
 <section class="max-w-lg mx-auto mb-24 px-8 min-h-screen">
 
     <div class="mt-8">
-        <form method="POST" class="flex items-center gap-4">
-            {% csrf_token %}
+        <form method="GET" class="flex items-center gap-4">
+            <!-- {% csrf_token %} -->
 
-            <input type="text" class="form-inputs" name="search" placeholder="Username">
+            <input type="text" class="form-inputs" name="query" placeholder="Username">
 
             <button type="submit" class="bg-indigo-600 rounded-full p-1.5 transition hover:bg-indigo-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -56,12 +56,11 @@
     </div>
 
 
-    <!-- <div class="flex justify-between items-center gap-4 mt-10 ">
+    <div class="flex justify-between items-center gap-4 mt-10 ">
 
         <div class="flex items-center gap-4">
-
             {% if resault.has_next %}
-            <a href="{% url 'search_user' resault.next_page_number %}">
+            <a href="{% url 'search_user' resault.next_page_number %}?query={{ search }}">
                 <button class="px-5 py-1.5 rounded-xl bg-indigo-600 transition group">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6 transition group-hover:-translate-x-3">
@@ -72,8 +71,8 @@
             </a>
             {% endif %}
 
-            {% if logs.has_previous %}
-            <a href="{% url 'search_user' resault.previous_page_number %}">
+            {% if resault.has_previous %}
+            <a href="{% url 'search_user' resault.previous_page_number %}?query={{ search }}">
 
                 <button class="px-5 py-1.5 rounded-xl bg-indigo-600 transition group">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -90,7 +89,7 @@
         <span class="text-sm text-gray-400">
             {{ resault.number }} of {{ resault.paginator.num_pages }}
         </span>
-        {% endif %} -->
+        {% endif %}
 
     </div>
 

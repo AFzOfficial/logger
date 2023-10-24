@@ -202,16 +202,13 @@ def edit_log(request, id: int):
 
 
 @login_required
-def search_user(request):
+def search_user(request, page: int = 1):
+    search = request.GET.get('query', None)
 
-    if request.method == "POST":
-        search = request.POST['search']
+    if search != None:
+        resault = User.objects.filter(username__icontains=search).order_by('id', )
+        paginator = Paginator(resault, 1)
 
-        resault = User.objects.filter(
-            username__contains=search).order_by('id', )[:100]
-
-        return render(request, 'logger/search.html', {'search': search, 'resault': resault})
+        return render(request, 'logger/search.html', {'search': search, 'resault': paginator.get_page(page)})
 
     return render(request, 'logger/search.html')
-
-
