@@ -56,22 +56,45 @@ def account_profile(request, username: str, page: int = 1):
 
     paginator = Paginator(logs, 10)
 
-    if request.method == "POST" and request.user.is_authenticated:
-        current_user_profile = request.user.profile
+    # if request.method == "POST" and request.user.is_authenticated:
+    #     current_user_profile = request.user.profile
 
-        action = request.POST['follow']
+    #     action = request.POST['follow']
 
-        match action:
-            case 'unfollow':
-                current_user_profile.follows.remove(user.profile)
-            case 'follow':
-                current_user_profile.follows.add(user.profile)
-            case _:
-                return redirect('home')
+    #     match action:
+    #         case 'unfollow':
+    #             current_user_profile.follows.remove(user.profile)
+    #         case 'follow':
+    #             current_user_profile.follows.add(user.profile)
+    #         case _:
+    #             return redirect('home')
 
-        current_user_profile.save()
+    #     current_user_profile.save()
 
     return render(request, 'logger/profile.html', {"profile": user.profile, "logs": paginator.get_page(page)})
+
+
+@login_required
+def follow_user(request, username: str):
+    user = get_object_or_404(User, username=username)
+    current_user_profile = request.user.profile
+
+    current_user_profile.follows.add(user.profile)
+    current_user_profile.save()
+    messages.success(request, 'User Followed.')
+    return redirect('profile', username=username)
+
+
+@login_required
+def unfollow_user(request, username: str):
+    user = get_object_or_404(User, username=username)
+    current_user_profile = request.user.profile
+
+    current_user_profile.follows.remove(user.profile)
+    current_user_profile.save()
+    messages.success(request, 'User Unfollowed.')
+    return redirect('profile', username=username)
+
 
 
 @guest_required
@@ -105,9 +128,10 @@ def signup_user(request):
     form = SignUpForm(request.POST or None)
 
     if User.objects.all().count() > 99:
-        messages.success(request, 'Sorry Registration has reached its maximum.')
+        messages.success(
+            request, 'Sorry Registration has reached its maximum.')
         return redirect('home')
-    
+
     if request.method == "POST" and form.is_valid():
         form.save()
         username = form.cleaned_data['username']
@@ -118,7 +142,7 @@ def signup_user(request):
         login(request, user)
         messages.success(request, 'Registered Successfully.')
         return redirect('home')
-        
+
     return render(request, 'logger/auth/signup.html', {'form': form})
 
 
@@ -200,13 +224,13 @@ def edit_log(request, id: int):
     return render(request, 'logger/edit_log.html', {'form': form})
 
 
-
 @login_required
 def search_user(request, page: int = 1):
     search = request.GET.get('query', None)
 
     if search != None:
-        resault = User.objects.filter(username__icontains=search).order_by('id', )
+        resault = User.objects.filter(
+            username__icontains=search).order_by('id', )
         paginator = Paginator(resault, 1)
 
         return render(request, 'logger/search.html', {'search': search, 'resault': paginator.get_page(page)})

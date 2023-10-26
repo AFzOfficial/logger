@@ -33,6 +33,10 @@ urlpatterns = [
     path('<str:username>/followings/page/<int:page>',
          views.user_followings, name='followings'),
 
+    path('<str:username>/follow', views.follow_user, name='follow'),
+    path('<str:username>/unfollow', views.unfollow_user, name='unfollow'),
+
+
     path('auth/login/', views.login_user, name='login'),
     path('auth/logout/', views.logout_user, name='logout'),
     path('auth/signup/', views.signup_user, name='signup'),
