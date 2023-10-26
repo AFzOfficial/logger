@@ -20,7 +20,7 @@ def index(request, page: int = 1):
         log.user = request.user
         log.save()
 
-        return redirect('home')
+        return redirect('home', page=page)
 
     paginator = Paginator(logs, 10)
 
@@ -44,7 +44,7 @@ def log(request, id: int, page: int = 1):
 
         log.replies.add(reply)
 
-        return redirect(request.META.get('HTTP_REFERER'))
+        return redirect('log', id=id, page=page)
 
     return render(request, 'logger/log.html', {'log': log, 'form': form, 'replies': paginator.get_page(page)})
 
