@@ -25,8 +25,7 @@ class Log(models.Model):
     def __str__(self):
         return (
             f'{self.user.username} '
-            f'{self.created_at} '
-            f'{self.body}...'
+            f'{self.body[:20]}...'
         )
 
 
