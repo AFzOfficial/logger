@@ -231,7 +231,7 @@ def search_user(request, page: int = 1):
     if search != None:
         resault = User.objects.filter(
             username__icontains=search).order_by('id', )
-        paginator = Paginator(resault, 1)
+        paginator = Paginator(resault, 100)
 
         return render(request, 'logger/search.html', {'search': search, 'resault': paginator.get_page(page)})
 
