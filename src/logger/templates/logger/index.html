@@ -69,9 +69,11 @@
                 <time class="text-xs">{{ log.created_at|naturaltime }}</time>
             </div>
 
-            <p dir="auto" class="mb-4 ml-2 text-sm font-normal">
-                {{ log.body }}
-            </p>
+            <a href="{% url 'log' log.id %}">
+                <p dir="auto" class="mb-4 ml-2 text-sm font-normal">
+                    {{ log.body }}
+                </p>
+            </a>
 
             <div class="flex items-center gap-2 ml-1 mt-7">
 

@@ -153,9 +153,11 @@
                 <time class="text-xs">{{ reply.created_at|naturaltime }}</time>
             </div>
 
-            <p dir="auto" class="mb-4 ml-2 text-sm font-normal">
-                {{ reply.body }}
-            </p>
+            <a href="{% url 'log' reply.id %}">
+                <p dir="auto" class="mb-4 ml-2 text-sm font-normal">
+                    {{ reply.body }}
+                </p>
+            </a>
 
             <div class="flex items-center gap-2 ml-1 mt-7">
 
