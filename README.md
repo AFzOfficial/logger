@@ -40,3 +40,7 @@ docker compose up -d
 ```
 
 Open [127.0.0.1:8000](http://127.0.0.1:8000) in your browser
+
+## Todos
+- [] Add Email Authentication with Celery and Redis
+- [] Reset Password
