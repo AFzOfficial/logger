@@ -3,6 +3,8 @@ Django==4.2.3
 django-appconf==1.0.5
 django-compressor==4.4
 Pillow==10.0.0
+psycopg2-binary==2.9.9
 rcssmin==1.1.1
 rjsmin==1.2.1
 sqlparse==0.4.4
+typing_extensions==4.8.0
